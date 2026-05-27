@@ -46,12 +46,6 @@ This system ensures **no partial bookings ever occur**:
 4. Otherwise reject entire request
 
 ---
-
-## Testing
-
-```bash
-python -m pytest tests -v
-
 # FamCare Backend – Multi-Service Booking System
 
 ## Overview
@@ -184,3 +178,10 @@ Now just run:
 git add README.md
 git commit -m "final shortlisting README"
 git push origin main
+
+
+## Testing
+
+```bash
+python -m pytest tests -v
+
