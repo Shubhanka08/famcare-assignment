@@ -32,6 +32,7 @@ A FastAPI backend for a healthcare booking system that supports multi-service ch
 - `GET /services` → List all services  
 - `GET /slots/available?service_id=` → Get available time slots  
 - `POST /cart/checkout` → Atomic multi-service booking  
+<img width="2856" height="1650" alt="image" src="https://github.com/user-attachments/assets/5c1b93c5-4a67-4109-8f1c-b501fa71dddb" />
 
 ---
 
