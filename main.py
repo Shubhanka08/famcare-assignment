@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 app = FastAPI()
 
-
 # Fake database
 bookings = [
     {
@@ -16,6 +15,11 @@ bookings = [
     }
 ]
 
+# Services (IMPORTANT: used everywhere safely now)
+services = {
+    1: {"duration": 60},
+    2: {"duration": 30}
+}
 
 # Home API
 @app.get("/")
@@ -26,8 +30,7 @@ def home():
 # Services API
 @app.get("/services")
 def get_services():
-
-    services = [
+    return [
         {
             "id": 1,
             "name": "Physiotherapy",
@@ -42,17 +45,14 @@ def get_services():
         }
     ]
 
-    return services
-
 
 # Available slots API
 @app.get("/slots/available")
 def available_slots(service_id: int):
 
-    services = {
-        1: {"duration": 60},
-        2: {"duration": 30}
-    }
+    # FIX: safe validation
+    if service_id not in services:
+        raise HTTPException(status_code=400, detail="Invalid service_id")
 
     duration = services[service_id]["duration"]
 
@@ -72,20 +72,10 @@ def available_slots(service_id: int):
 
         for booking in bookings:
 
-            existing_start = datetime.strptime(
-                booking["start_time"],
-                "%H:%M"
-            )
+            existing_start = datetime.strptime(booking["start_time"], "%H:%M")
+            existing_end = datetime.strptime(booking["end_time"], "%H:%M")
 
-            existing_end = datetime.strptime(
-                booking["end_time"],
-                "%H:%M"
-            )
-
-            overlap = (
-                new_start < existing_end
-                and new_end > existing_start
-            )
+            overlap = (new_start < existing_end and new_end > existing_start)
 
             if overlap:
                 conflict = True
@@ -106,11 +96,6 @@ def available_slots(service_id: int):
 @app.post("/cart/checkout")
 def checkout(cart: list[dict]):
 
-    services = {
-        1: {"duration": 60},
-        2: {"duration": 30}
-    }
-
     temp_bookings = []
 
     for item in cart:
@@ -121,6 +106,13 @@ def checkout(cart: list[dict]):
         date = item["date"]
         start_time = item["start_time"]
 
+        # ✅ FIX: prevent KeyError crash (IMPORTANT)
+        if service_id not in services:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid service_id {service_id}"
+            )
+
         duration = services[service_id]["duration"]
 
         start = datetime.strptime(start_time, "%H:%M")
@@ -128,28 +120,13 @@ def checkout(cart: list[dict]):
 
         for booking in bookings:
 
-            existing_start = datetime.strptime(
-                booking["start_time"],
-                "%H:%M"
-            )
+            existing_start = datetime.strptime(booking["start_time"], "%H:%M")
+            existing_end = datetime.strptime(booking["end_time"], "%H:%M")
 
-            existing_end = datetime.strptime(
-                booking["end_time"],
-                "%H:%M"
-            )
+            caregiver_conflict = (caregiver_id == booking["caregiver_id"])
+            patient_conflict = (patient_id == booking["patient_id"])
 
-            caregiver_conflict = (
-                caregiver_id == booking["caregiver_id"]
-            )
-
-            patient_conflict = (
-                patient_id == booking["patient_id"]
-            )
-
-            overlap = (
-                start < existing_end
-                and end > existing_start
-            )
+            overlap = (start < existing_end and end > existing_start)
 
             if overlap and caregiver_conflict:
                 raise HTTPException(
@@ -172,7 +149,7 @@ def checkout(cart: list[dict]):
             "end_time": end.strftime("%H:%M")
         })
 
-    # Atomic commit (all or nothing)
+    # Atomic commit
     bookings.extend(temp_bookings)
 
     return {
