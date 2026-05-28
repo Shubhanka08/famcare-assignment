@@ -102,9 +102,9 @@ Returns 15-minute interval slots excluding conflicts.
 
 POST /cart/checkout
 
+
+
 ---
-
-
 Request:
 ```json
 [
@@ -119,6 +119,7 @@ Request:
 
 ---
 
+---
 Behavior:
 
 Validates all requests
