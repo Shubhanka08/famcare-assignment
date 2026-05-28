@@ -36,6 +36,8 @@ This system ensures:
 - Time slots are validated using complete service duration
 
 ---
+<img width="2856" height="1650" alt="Screenshot 2026-05-27 114349" src="https://github.com/user-attachments/assets/c6b8ada7-bbf0-4a64-881b-a7b53e25a0f3" />
+
 
 ## API Endpoints
 
