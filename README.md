@@ -115,6 +115,8 @@ Request:
   }
 ]
 
+---
+
 Behavior:
 
 Validates all requests
@@ -148,6 +150,8 @@ Pytest
 In-memory data structures (assignment scope)
 Testing
 
+---
+
 Run tests:
 
 python -m pytest tests -v
@@ -156,6 +160,8 @@ Expected result:
 
 3/3 tests passed
 <img width="2294" height="542" alt="image" src="https://github.com/user-attachments/assets/7c8f914a-5d40-4056-8988-fe5dad06a4d6" />
+
+---
 
 Key Highlights
 Production-style booking system design
@@ -178,6 +184,8 @@ Now just run:
 git add README.md
 git commit -m "final shortlisting README"
 git push origin main
+
+---
 
 
 ## Testing
